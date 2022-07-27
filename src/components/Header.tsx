@@ -6,7 +6,7 @@ import {
   StyledProps,
 } from 'native-base';
 import { CaretLeft } from 'phosphor-react-native';
-// import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 type Props = StyledProps & {
   title: string;
@@ -14,10 +14,10 @@ type Props = StyledProps & {
 
 export function Header({ title, ...rest }: Props) {
   const { colors } = useTheme();
-  // const navigation = useNavigation();
+  const navigation = useNavigation();
 
   function handleGoBack() {
-    // navigation.goBack();
+    navigation.goBack();
   }
 
   return (

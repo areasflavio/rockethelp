@@ -8,9 +8,7 @@ import {
 
 import { THEME } from './src/styles/theme';
 import { Loading } from './src/components/Loading';
-import { SignIn } from './src/screens/SignIn';
-import { Home } from './src/screens/Home';
-import { Register } from './src/screens/Register';
+import { Routes } from './src/routes';
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -27,7 +25,7 @@ export default function App() {
       />
       {fontsLoaded ? (
         <>
-          <Register />
+          <Routes />
         </>
       ) : (
         <Loading />

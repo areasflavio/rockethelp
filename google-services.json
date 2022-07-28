@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "583920016265",
+    "project_id": "rockethelp-areasflavio",
+    "storage_bucket": "rockethelp-areasflavio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583920016265:android:375e5177fadadc31e75f58",
+        "android_client_info": {
+          "package_name": "com.rockethelp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583920016265-fp206omelevbuqo9h1ds61580l9hmsfe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYvzqoN_WuwgVbX9FoKY7m9ORCs2dCdvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "583920016265-fp206omelevbuqo9h1ds61580l9hmsfe.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "583920016265-3h1p5sbl670noff9g8c4473cg3h8khhn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.rockethelp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,7 +9,6 @@ import {
 import { THEME } from './src/styles/theme';
 import { Loading } from './src/components/Loading';
 import { Routes } from './src/routes';
-import { SignIn } from './src/screens/SignIn';
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -26,7 +25,7 @@ export default function App() {
       />
       {fontsLoaded ? (
         <>
-          <SignIn />
+          <Routes />
         </>
       ) : (
         <Loading />

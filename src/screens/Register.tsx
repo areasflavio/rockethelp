@@ -1,23 +1,35 @@
-import { useState } from 'react';
-import { VStack } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
+import { VStack } from 'native-base';
+import { useState } from 'react';
 
+import { AlertComponent as Alert } from '../components/Alert';
+import { Button } from '../components/Button';
 import { Header } from '../components/Header';
 import { Input } from '../components/Input';
-import { Button } from '../components/Button';
-import { Alert } from 'react-native';
 
 export function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [patrimony, setPatrimony] = useState('');
   const [description, setDescription] = useState('');
+  const [alertMessage, setAlertMessage] = useState({
+    status: '',
+    title: '',
+    message: '',
+  });
+  const [showAlert, setShowAlert] = useState(false);
 
   const navigation = useNavigation();
 
   async function handleNewOrderRegister() {
     if (!patrimony || !description) {
-      return Alert.alert('Registrar', 'Preencha todos os campos.');
+      setShowAlert(true);
+      setAlertMessage({
+        status: 'error',
+        title: 'Registrar',
+        message: 'Preencha todos os campos.',
+      });
+      return;
     }
 
     setIsLoading(true);
@@ -30,12 +42,28 @@ export function Register() {
         created_at: firestore.FieldValue.serverTimestamp(),
       });
 
-      Alert.alert('Solicitação', 'Solicitação registrada com sucesso.');
-      navigation.goBack();
+      setAlertMessage({
+        status: 'success',
+        title: 'Solicitação',
+        message: 'Solicitação registrada com sucesso.',
+      });
+
+      setShowAlert(true);
+
+      setTimeout(() => {
+        navigation.goBack();
+      }, 2000);
     } catch (err) {
       console.log(err);
       setIsLoading(false);
-      return Alert.alert('Solicitação', 'Não foi possível registrar o pedido');
+
+      setAlertMessage({
+        status: 'success',
+        title: 'Solicitação',
+        message: 'Não foi possível registrar o pedido',
+      });
+      setShowAlert(true);
+      return;
     }
   }
 
@@ -63,6 +91,14 @@ export function Register() {
         mt={5}
         isLoading={isLoading}
         onPress={handleNewOrderRegister}
+      />
+
+      <Alert
+        setShow={setShowAlert}
+        show={showAlert}
+        status={alertMessage.status}
+        title={alertMessage.title}
+        message={alertMessage.message}
       />
     </VStack>
   );

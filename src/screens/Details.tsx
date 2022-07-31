@@ -1,24 +1,24 @@
-import { useEffect, useState } from 'react';
-import { Alert } from 'react-native';
-import { VStack, Text, HStack, useTheme, ScrollView, Box } from 'native-base';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
-import { OrderFirestoreDTO } from '../DTOs/OrderFirestoreDTO';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Box, HStack, ScrollView, Text, useTheme, VStack } from 'native-base';
 import {
   CircleWavyCheck,
-  Hourglass,
-  DesktopTower,
   ClipboardText,
+  DesktopTower,
+  Hourglass,
 } from 'phosphor-react-native';
+import { useEffect, useState } from 'react';
+import { OrderFirestoreDTO } from '../DTOs/OrderFirestoreDTO';
 
 import { dateFormat } from '../utils/firestoreDateFormat';
 
-import { Input } from '../components/Input';
+import { AlertComponent as Alert } from '../components/Alert';
 import { Button } from '../components/Button';
-import { Header } from '../components/Header';
-import { OrderProps } from '../components/Order';
-import { Loading } from '../components/Loading';
 import { CardDetails } from '../components/CardDetails';
+import { Header } from '../components/Header';
+import { Input } from '../components/Input';
+import { Loading } from '../components/Loading';
+import { OrderProps } from '../components/Order';
 
 type RouteParams = {
   orderId: string;
@@ -34,6 +34,11 @@ export function Details() {
   const [solution, setSolution] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [order, setOrder] = useState<OrderDetails>({} as OrderDetails);
+  const [alertMessage, setAlertMessage] = useState({
+    status: '',
+    message: '',
+  });
+  const [showAlert, setShowAlert] = useState(false);
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -43,10 +48,14 @@ export function Details() {
 
   function handleOrderClose() {
     if (!solution) {
-      return Alert.alert(
-        'Solicitação',
-        'Informa a solução para encerrar a solicitação'
-      );
+      setAlertMessage({
+        status: 'error',
+        message: 'Informa a solução para encerrar a solicitação',
+      });
+
+      setShowAlert(true);
+
+      return;
     }
 
     firestore()
@@ -58,12 +67,28 @@ export function Details() {
         closed_at: firestore.FieldValue.serverTimestamp(),
       })
       .then(() => {
-        Alert.alert('Solicitação', 'Solicitação encerrada.');
-        navigation.goBack();
+        setAlertMessage({
+          status: 'success',
+          message: 'Solicitação encerrada.',
+        });
+
+        setShowAlert(true);
+
+        setTimeout(() => {
+          navigation.goBack();
+        }, 2000);
       })
       .catch((error) => {
         console.log(error);
-        Alert.alert('Solicitação', 'Não foi possível encerrar a solicitação');
+
+        setAlertMessage({
+          status: 'error',
+          message: 'Não foi possível encerrar a solicitação',
+        });
+
+        setShowAlert(true);
+
+        return;
       });
   }
 
@@ -164,6 +189,14 @@ export function Details() {
       {order.status === 'open' && (
         <Button title="Encerrar solicitação" m={5} onPress={handleOrderClose} />
       )}
+
+      <Alert
+        setShow={setShowAlert}
+        show={showAlert}
+        status={alertMessage.status}
+        title="Solicitação"
+        message={alertMessage.message}
+      />
     </VStack>
   );
 }

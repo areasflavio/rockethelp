@@ -2,11 +2,10 @@ import auth from '@react-native-firebase/auth';
 import { Heading, Icon, IconButton, useTheme, VStack } from 'native-base';
 import { Envelope, Eye, EyeSlash, Key } from 'phosphor-react-native';
 import { useState } from 'react';
-import { Alert } from 'react-native';
 
 import Logo from '../assets/logo_primary.svg';
 
-import { AlertComponent } from '../components/Alert';
+import { AlertComponent as Alert } from '../components/Alert';
 import { Button } from '../components/Button';
 import { Input } from '../components/Input';
 
@@ -105,7 +104,7 @@ export function SignIn() {
         isLoading={isLoading}
       />
 
-      <AlertComponent
+      <Alert
         setShow={setShowAlert}
         show={showAlert}
         status="error"

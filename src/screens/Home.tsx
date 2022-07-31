@@ -1,27 +1,26 @@
-import { useState, useEffect } from 'react';
-import { Alert } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 import {
+  Center,
+  FlatList,
+  Heading,
   HStack,
   IconButton,
-  VStack,
-  useTheme,
   Text,
-  Heading,
-  FlatList,
-  Center,
+  useTheme,
+  VStack,
 } from 'native-base';
-import { SignOut } from 'phosphor-react-native';
-import { ChatTeardropText } from 'phosphor-react-native';
+import { ChatTeardropText, SignOut } from 'phosphor-react-native';
+import { useEffect, useState } from 'react';
+import { AlertComponent as Alert } from '../components/Alert';
 
 import { dateFormat } from '../utils/firestoreDateFormat';
 
 import Logo from '../assets/logo_secondary.svg';
 
-import { Filter } from '../components/Filter';
 import { Button } from '../components/Button';
+import { Filter } from '../components/Filter';
 import { Loading } from '../components/Loading';
 import { Order, OrderProps } from '../components/Order';
 
@@ -31,6 +30,7 @@ export function Home() {
     'open'
   );
   const [orders, setOrders] = useState<OrderProps[]>([]);
+  const [showAlert, setShowAlert] = useState(false);
 
   const navigation = useNavigation();
   const { colors } = useTheme();
@@ -48,7 +48,9 @@ export function Home() {
       .signOut()
       .catch((error) => {
         console.log(error);
-        return Alert.alert('Sair', 'Não foi possível sair.');
+        setShowAlert(true);
+
+        return;
       });
   }
 
@@ -151,6 +153,14 @@ export function Home() {
 
         <Button title="Nova solicitação" onPress={handleNewOrder} />
       </VStack>
+
+      <Alert
+        setShow={setShowAlert}
+        show={showAlert}
+        status="error"
+        title="Sair"
+        message="Não foi possível sair."
+      />
     </VStack>
   );
 }

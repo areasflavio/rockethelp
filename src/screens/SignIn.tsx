@@ -1,53 +1,54 @@
+import auth from '@react-native-firebase/auth';
+import { Heading, Icon, IconButton, useTheme, VStack } from 'native-base';
+import { Envelope, Eye, EyeSlash, Key } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Alert } from 'react-native';
-import { VStack, Heading, Icon, useTheme } from 'native-base';
-import { Envelope, Key } from 'phosphor-react-native';
-import auth from '@react-native-firebase/auth';
 
 import Logo from '../assets/logo_primary.svg';
 
-import { Input } from '../components/Input';
+import { AlertComponent } from '../components/Alert';
 import { Button } from '../components/Button';
+import { Input } from '../components/Input';
 
 export function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('Não foi possível acessar.');
+  const [showAlert, setShowAlert] = useState(false);
 
   const { colors } = useTheme();
 
   async function handleSignIn() {
     if (!email || !password) {
-      return Alert.alert('Entrar', 'Informe Email e Senha.');
+      setShowAlert(true);
+      return;
     }
 
     setIsLoading(true);
 
     try {
-      const signInData = await auth().signInWithEmailAndPassword(
-        email,
-        password
-      );
-
-      console.log(signInData);
+      await auth().signInWithEmailAndPassword(email, password);
     } catch (err) {
       console.log(err);
 
       switch (err.code) {
         case 'auth/invalid-email':
-          Alert.alert('Entrar', 'Email inválido.');
+          setAlertMessage('Email inválido.');
           break;
         case 'auth/wrong-password':
-          Alert.alert('Entrar', 'Email ou senha inválido.');
+          setAlertMessage('Email ou senha inválido.');
           break;
         case 'auth/user-not-found':
-          Alert.alert('Entrar', 'Usuário não encontrado.');
+          setAlertMessage('Usuário não encontrado.');
           break;
 
         default:
-          Alert.alert('Entrar', 'Não foi possível acessar.');
           break;
       }
+
+      setShowAlert(true);
     }
 
     setIsLoading(false);
@@ -73,10 +74,28 @@ export function SignIn() {
 
       <Input
         mb={8}
+        type={showPassword ? 'text' : 'password'}
         placeholder="Senha"
         InputLeftElement={<Icon as={<Key color={colors.gray[300]} />} ml={4} />}
-        secureTextEntry
+        // secureTextEntry
         onChangeText={setPassword}
+        InputRightElement={
+          <IconButton
+            icon={
+              <Icon
+                as={
+                  showPassword ? (
+                    <Eye color={colors.gray[300]} />
+                  ) : (
+                    <EyeSlash color={colors.gray[300]} />
+                  )
+                }
+              />
+            }
+            mr={2}
+            onPress={() => setShowPassword(!showPassword)}
+          />
+        }
       />
 
       <Button
@@ -84,6 +103,14 @@ export function SignIn() {
         w="full"
         onPress={handleSignIn}
         isLoading={isLoading}
+      />
+
+      <AlertComponent
+        setShow={setShowAlert}
+        show={showAlert}
+        status="error"
+        title="Entrar"
+        message={alertMessage}
       />
     </VStack>
   );
